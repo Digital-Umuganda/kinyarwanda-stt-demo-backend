@@ -1,0 +1,11 @@
+
+.DS_Store
+
+#docker
+.env
+
+#python + framework
+*.egg-info
+__pycache__/
+*.py[cod]
+*.coverage

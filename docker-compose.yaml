@@ -1,0 +1,78 @@
+version: '3.7'
+services:
+  english-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.englishdock
+    container_name: 'deepspeech_english_api'
+    ports:
+      - '0.0.0.0:8001:5000'
+    restart: 'unless-stopped'
+    volumes:
+      - deepspeech-english-data:/app/
+    environment:
+      - SANIC_DEBUG=${SANIC_DEBUG}
+      - SANIC_TESTING=${SANIC_TESTING}
+      - SANIC_HOST=${SANIC_HOST}
+      - SANIC_PORT=${SANIC_PORT}
+      - SANIC_ENV=${SANIC_ENV}
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URI=${DATABASE_URI}
+      - SANIC_WEBSOCKET_MAX_SIZE=${SANIC_WEBSOCKET_MAX_SIZE}
+      - SANIC_WEBSOCKET_PING_TIMEOUT=${SANIC_WEBSOCKET_PING_TIMEOUT}
+      - SANIC_RESPONSE_TIMEOUT=${SANIC_RESPONSE_TIMEOUT}
+      - SANIC_REQUEST_TIMEOUT=${SANIC_REQUEST_TIMEOUT}     
+    networks:
+      - infrastructure_default
+      - internal_infrastructure
+  
+  kinyarwanda-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.kinyarwanda
+    container_name: 'deepspeech_kinyarwanda_api'
+    ports:
+      - '0.0.0.0:8000:5000'
+    restart: 'unless-stopped'
+    volumes:
+      - deepspeech-kinyarwanda-data:/app/
+    environment:
+      - SANIC_DEBUG=${SANIC_DEBUG}
+      - SANIC_TESTING=${SANIC_TESTING}
+      - SANIC_HOST=${SANIC_HOST}
+      - SANIC_PORT=${SANIC_PORT}
+      - SANIC_ENV=${SANIC_ENV}
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URI=${DATABASE_URI}
+      - SANIC_WEBSOCKET_MAX_SIZE=${SANIC_WEBSOCKET_MAX_SIZE}
+      - SANIC_WEBSOCKET_PING_TIMEOUT=${SANIC_WEBSOCKET_PING_TIMEOUT}
+      - SANIC_RESPONSE_TIMEOUT=${SANIC_RESPONSE_TIMEOUT}
+      - SANIC_REQUEST_TIMEOUT=${SANIC_REQUEST_TIMEOUT}     
+    networks:
+      - infrastructure_default
+      - internal_infrastructure
+
+  deepspeech-db:
+    image: postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+        - internal_infrastructure
+
+networks:
+  infrastructure_default: # external network
+    external: true
+  internal_infrastructure: #internal network
+    internal: true 
+
+volumes:
+  deepspeech-english-data:
+    driver: local
+  deepspeech-kinyarwanda-data:
+    driver: local
+  database-data:
+    driver: local
