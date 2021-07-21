@@ -12,6 +12,7 @@ Below are instructions to run the backend in Docker.
 
 .. code-block:: console
 
+    $ docker network create infrastructure_default
     $ git clone https://github.com/Digital-Umuganda/kinyarwanda-stt-demo-backend.git
     $ cd kinyarwanda-stt-demo-backend.git
 
