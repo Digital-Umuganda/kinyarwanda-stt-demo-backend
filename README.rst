@@ -1,23 +1,12 @@
 Digital Umuganda STT english and Kinyarwanda backend
 ===================
 
-|Open| |versions|
-
-
-.. |Open| image:: https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/
-.. |versions| image:: https://img.shields.io/pypi/pyversions/google-cloud-speech.svg
-
-This REST API is built on top of Mozilla's `DeepSpeech`_. It is written based on `examples`_  provided by Mozilla. It accepts HTTP methods such as GET and POST as well as WebSocket. To perform transcription using HTTP methods is
-appropriate for relatively short audio files while the WebSocket can be used even for longer audio recordings.
-
-.. _DeepSpeech: https://github.com/mozilla/DeepSpeech
-.. _examples: https://github.com/mozilla/DeepSpeech-examples
-
+A dockerized demo of Deepspeech Keyword spotter and transcriber
 
 Getting started
 ~~~~~~~~~~~~~~~
 
-Below instructions are for Unix/OS X, they will have to be changed to be able to run the code on Windows.
+Below are instructions to run the backend in Docker.
 
 1. Clone the repository to your local machine and change directory to `kinyarwanda-stt-demo-backend.git`
 
@@ -144,36 +133,3 @@ Change directory to ``audio`` and use the WAV files provided for testing.
     response = requests.post(url, data=hot_words, files=audio, headers=headers)
     print(response.json())
 
-
-
-- STT the WebSocket way (simple test)
-
-WebSockets don't support ``curl``. To take advantage of this feature, you will have to write a web app to send request to the endpoint ``/api/v1/stt/ws``.
-
- 
-Below command can be used to check if the WebSocket is running.
-
-.. code-block:: console
-
-    $ python client_audio_file_stt.py
-
-In the both cases (HTTP and WebSocket), you should get a result in below format.
-
-.. code-block:: json
-
-    {
-      "message": "experience proves this",
-      "time": 1.4718825020026998
-    }
-
-STT with speech from microphone
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Below command can be used to stream speech using the WebSocket on the endpoint ``api/v1/mic``. Also in this case, the web app well need to implement
-something similar (or far better) to the one in below code.
-
-.. code-block:: console
-
-    $ python client_audio_file_stt.py
-
-Now you can stream speech to your server and see the result in the client's shell. The implementation of VAD (Voice Activity Detection) will be released pretty soon.
