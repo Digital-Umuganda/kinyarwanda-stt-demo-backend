@@ -1,4 +1,4 @@
-DeepSpeech REST API
+Digital Umuganda STT english and Kinyarwanda backend
 ===================
 
 |Open| |versions|
@@ -19,48 +19,37 @@ Getting started
 
 Below instructions are for Unix/OS X, they will have to be changed to be able to run the code on Windows.
 
-1. Clone the repository to your local machine and change directory to ``deepspeech-rest-api``
+1. Clone the repository to your local machine and change directory to `kinyarwanda-stt-demo-backend.git`
 
 .. code-block:: console
 
-    $ git clone https://github.com/fabricekwizera/deepspeech-rest-api.git
-    $ cd deepspeech-rest-api
+    $ git clone https://github.com/Digital-Umuganda/kinyarwanda-stt-demo-backend.git
+    $ cd kinyarwanda-stt-demo-backend.git
 
 
-2. Create a virtual environment and activate it (assuming that it is installed your machine)
-and install the project in editable mode (locally).
-
-.. code-block:: console
-
-    $ python -m venv venv
-    $ source venv/bin/activate
-    $ python -m pip install -U pip==21.0.0 wheel
-    $ python -m pip install --editable .
-
-
-3. Download the model and the scorer. For English model and scorer, follow below links
+2. Build the docker environment (assuming that docker and docker-compose is installed your machine).
 
 .. code-block:: console
 
-    $ wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm \
-        -O deepspeech_model.pbmm
-    $ wget https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer \
-        -O deepspeech_model.scorer
+    $ docker-compose build
 
-
-For other languages, you can place the two files in the current working directory under the names ``deepspeech_model.pbmm`` for the
-model and ``deepspeech_model.scorer`` for the scorer.
-
-4. Migrations are done using `Alembic`_
-
-.. _Alembic: https://alembic.sqlalchemy.org/en/latest/tutorial.html#the-migration-environment
-
-5. Running the server
+3. Start the containers, this will start the DeepSpeech english and kinyarwanda containers and the postgres database.
 
 .. code-block:: console
 
+    $ docker-compose up -d
 
-    $ python run.py
+
+4. Log in to the postgres docker compose and create the table user
+
+.. code-block:: console
+
+    $ docker exec -it <postgres-container-id> psql -U forrest -d deepspeechapi -W 
+    $ CREATE TABLE users (id serial PRIMARY KEY, username VARCHAR ( 127 ) UNIQUE NOT NULL, email VARCHAR ( 127 ) UNIQUE NOT NULL,password VARCHAR ( 255 ) NOT NULL,created_at TIMESTAMP NOT NULL,modified_at TIMESTAMP);
+    
+
+5. Access the servers, Note for `Kinyarwanda you access via localhost:8000` and `English via localhost:8001`
+
 
 
 Usage
@@ -72,7 +61,7 @@ Register a new user and request a new `JWT`_ token to access the API
 .. code-block:: console
 
     $ curl -X POST \
-    http://0.0.0.0:8000/users \
+    http://0.0.0.0:8001/users \
     -H 'Content-Type: application/json' \
     -d '{
     "username": "forrestgump",
@@ -94,7 +83,7 @@ To generate a JWT token to access the API
 .. code-block:: console
 
     $ curl -X POST \
-    http://0.0.0.0:8000/token \
+    http://0.0.0.0:8001/token \
     -H 'Content-Type: application/json' \
     -d '{
     "username": "forrestgump",
@@ -132,7 +121,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
     cURL
 
     $ curl -X POST \
-    http://0.0.0.0:8000/api/v1/stt/http \
+    http://0.0.0.0:8001/api/v1/stt/http \
     -H 'Authorization: Bearer JWT_token' \
     -F 'audio=@8455-210777-0068.wav' \
     -F 'paris=-1000' \
@@ -148,7 +137,7 @@ Change directory to ``audio`` and use the WAV files provided for testing.
 
     jwt_token = 'JWT_token'
     headers = {'Authorization': 'Bearer ' + jwt_token}
-    url = 'http://0.0.0.0:8000/api/v1/stt/http'
+    url = 'http://0.0.0.0:8001/api/v1/stt/http'
     hot_words = {'paris': -1000, 'power': 1000, 'parents': -1000}
     audio_filename = 'audio/8455-210777-0068.wav'
     audio = [('audio', open(audio_filename, 'rb'))]
