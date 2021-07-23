@@ -3,7 +3,7 @@ services:
   english-api:
     build:
       context: .
-      dockerfile: Dockerfile.englishdock
+      dockerfile: Dockerfile.english
     container_name: 'deepspeech_english_api'
     ports:
       - '0.0.0.0:8001:5000'
