@@ -30,7 +30,8 @@ setup(
         'sqlalchemy',
         'webrtcvad',
         'websocket-client',
-        'werkzeug'
+        'werkzeug',
+        'sanic_cors'
     ],
     classifiers=[
         'Framework :: Sanic',

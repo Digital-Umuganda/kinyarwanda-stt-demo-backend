@@ -11,6 +11,7 @@ requests
 sanic
 sanic-jwt
 sanic-validation
+sanic_cors
 scipy
 sqlalchemy
 webrtcvad
