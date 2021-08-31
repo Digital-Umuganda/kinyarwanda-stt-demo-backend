@@ -1,3 +1,4 @@
+from subprocess import PIPE, run
 import queue
 import wave
 from io import BytesIO
@@ -19,7 +20,9 @@ def normalize_audio_input(audio):
     if err:
         raise Exception(err)
     return output
-
+def run_os_command(command):
+    result = run(command, stdout=PIPE, stderr=PIPE, universal_newlines=True, shell=True)
+    return result.stdout
 
 class Frame(object):
     """Represents a "frame" of audio data."""
@@ -51,8 +54,16 @@ class SpeechToTextEngine:
     def run(self, audio) -> str:
         """ Receives the audio,  normalizes it and is sent to the model to be transcribed. Returns the result of the
         transcribe audio in string format."""
-
-        normalized_audio = normalize_audio_input(audio)
+        audio_format = run_os_command("""ffprobe {} -show_format 2>/dev/null | awk -F"=" '$1 == "format_name" {print $2}'""".format(audio))
+        if audio_format == 'wav':
+            audio_wav = audio
+        elif audio_format == 'mp3':
+            audio_wav = run_os_command("""ffmpeg -i {} -acodec pcm_u8 -ar 22050 {}.wav""".format(audio,audio))
+        elif audio_format == 'ogg':
+            audio_wav = run_os_command("""ffmpeg -i {} -acodec pcm_u8 -ar 22050 {}.wav""".format(audio,audio))
+        else:
+            return "Format incorrect"
+        normalized_audio = normalize_audio_input(audio_wav)
         audio_streams = BytesIO(normalized_audio)
         with wave.Wave_read(audio_streams) as wav:
             audio_streams = np.frombuffer(wav.readframes(wav.getnframes()), np.int16)
