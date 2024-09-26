@@ -17,3 +17,4 @@ sqlalchemy
 webrtcvad
 werkzeug
 websocket-client
+prometheus-fastapi-instrumentator==5.9.1
